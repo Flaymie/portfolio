@@ -1,0 +1,32 @@
+# Виртуальное окружение
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Файлы базы данных
+*.db
+*.sqlite3
+
+# Логи
+*.log
+
+# Файлы операционной системы
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Архивы
+*.zip
+*.rar
+*.tar.gz
+
+# Локальные настройки IDE
+.idea/
+.vscode/
+*.swp
+*.swo 

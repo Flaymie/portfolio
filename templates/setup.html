@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройка администратора - Портфолио</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div class="auth-background">
+        <div class="auth-circles"></div>
+    </div>
+
+    <a href="{{ url_for('index') }}" class="home-return-link">
+        <i class="fas fa-arrow-left"></i>
+        <span>На главную</span>
+    </a>
+
+    <div class="login-container">
+        <div class="setup-card">
+            <div class="setup-header">
+                <div class="auth-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h1>Настройка администратора</h1>
+                <p>Создание учетной записи для управления сайтом</p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="{% if category == 'error' %}error-message{% else %}success-message{% endif %} animated fadeInUp">
+                    <i class="{% if category == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %}"></i> {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+            
+            {% if error %}
+            <div class="error-message animated fadeInUp">
+                <i class="fas fa-exclamation-circle"></i> {{ error }}
+            </div>
+            {% endif %}
+            
+            <form class="setup-form" method="post" action="{{ url_for('setup') }}">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Имя пользователя
+                    </label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                    <span class="input-highlight"></span>
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Пароль
+                    </label>
+                    <input type="password" id="password" name="password" required autocomplete="new-password">
+                    <span class="input-highlight"></span>
+                    <button type="button" class="toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">
+                        <i class="fas fa-check-circle"></i> Подтверждение пароля
+                    </label>
+                    <input type="password" id="confirm_password" name="confirm_password" required autocomplete="new-password">
+                    <span class="input-highlight"></span>
+                    <button type="button" class="toggle-confirm-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-bar"></div>
+                    </div>
+                    <span class="strength-text">Сложность пароля</span>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-auth">
+                        <span class="btn-auth-text">Создать аккаунт</span>
+                        <i class="fas fa-user-plus"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация формы и элементов
+            const setupCard = document.querySelector('.setup-card');
+            const formGroups = document.querySelectorAll('.form-group');
+            const passwordStrength = document.querySelector('.password-strength');
+            const formActions = document.querySelector('.form-actions');
+            const homeLink = document.querySelector('.home-return-link');
+            
+            setTimeout(() => {
+                setupCard.classList.add('show');
+                homeLink.classList.add('show');
+            }, 100);
+            
+            formGroups.forEach((group, index) => {
+                setTimeout(() => {
+                    group.classList.add('show');
+                }, 300 + (index * 150));
+            });
+            
+            setTimeout(() => {
+                if (passwordStrength) passwordStrength.classList.add('show');
+            }, 300 + (formGroups.length * 150));
+            
+            setTimeout(() => {
+                formActions.classList.add('show');
+            }, 450 + (formGroups.length * 150));
+            
+            // Показать/скрыть пароль
+            const toggleButtons = document.querySelectorAll('.toggle-password, .toggle-confirm-password');
+            
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const input = this.previousElementSibling.previousElementSibling;
+                    const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
+                    input.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            });
+            
+            // Анимация для инпутов
+            const inputs = document.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+                
+                // Если поле уже заполнено
+                if (input.value !== '') {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+            
+            // Проверка сложности пароля
+            const password = document.getElementById('password');
+            const confirmPassword = document.getElementById('confirm_password');
+            const strengthBar = document.querySelector('.strength-bar');
+            const strengthText = document.querySelector('.strength-text');
+            
+            function checkPasswordStrength(password) {
+                let strength = 0;
+                
+                if (password.length >= 8) strength += 25;
+                if (password.match(/[a-z]+/)) strength += 25;
+                if (password.match(/[A-Z]+/)) strength += 25;
+                if (password.match(/[0-9]+/)) strength += 25;
+                
+                return strength;
+            }
+            
+            function updateStrengthIndicator() {
+                const value = password.value;
+                const strength = checkPasswordStrength(value);
+                
+                strengthBar.style.width = strength + '%';
+                
+                if (strength <= 25) {
+                    strengthBar.className = 'strength-bar weak';
+                    strengthText.textContent = 'Слабый пароль';
+                } else if (strength <= 50) {
+                    strengthBar.className = 'strength-bar medium';
+                    strengthText.textContent = 'Средний пароль';
+                } else if (strength <= 75) {
+                    strengthBar.className = 'strength-bar strong';
+                    strengthText.textContent = 'Хороший пароль';
+                } else {
+                    strengthBar.className = 'strength-bar very-strong';
+                    strengthText.textContent = 'Отличный пароль';
+                }
+            }
+            
+            if (password) {
+                password.addEventListener('input', updateStrengthIndicator);
+            }
+            
+            // Проверка совпадения паролей
+            function validatePassword() {
+                if (password.value !== confirmPassword.value) {
+                    confirmPassword.setCustomValidity('Пароли не совпадают');
+                    confirmPassword.parentElement.classList.add('has-error');
+                } else {
+                    confirmPassword.setCustomValidity('');
+                    confirmPassword.parentElement.classList.remove('has-error');
+                }
+            }
+            
+            if (password && confirmPassword) {
+                password.addEventListener('change', validatePassword);
+                confirmPassword.addEventListener('keyup', validatePassword);
+            }
+            
+            // Волновой эффект на кнопке
+            const authButton = document.querySelector('.btn-auth');
+            
+            authButton.addEventListener('mouseenter', function() {
+                this.classList.add('btn-hover');
+            });
+            
+            authButton.addEventListener('mouseleave', function() {
+                this.classList.remove('btn-hover');
+            });
+            
+            authButton.addEventListener('click', function(e) {
+                if (!authButton.classList.contains('btn-active')) {
+                    // Проверяем валидность формы перед отправкой
+                    const form = document.querySelector('.setup-form');
+                    if (!form.checkValidity()) {
+                        return;
+                    }
+                    
+                    e.preventDefault();
+                    authButton.classList.add('btn-active');
+                    
+                    setTimeout(() => {
+                        form.submit();
+                    }, 600);
+                }
+            });
+        });
+    </script>
+</body>
+</html> 

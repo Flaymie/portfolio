@@ -1,0 +1,160 @@
+<!-- project_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project[1] }} | Детали проекта</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body>
+    <!-- Навигация -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-code"></i>
+                <span>Портфолио</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{{ url_for('projects') }}" class="nav-link"><i class="fas fa-project-diagram"></i> Проекты</a></li>
+                {% if session.get('logged_in') %}
+                <li class="nav-auth"><a href="{{ url_for('logout') }}" class="nav-link">Выход</a></li>
+                {% else %}
+                <li class="nav-auth"><a href="{{ url_for('login') }}" class="nav-link">Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container flash-container">
+        {% for category, message in messages %}
+        <div class="{% if category == 'error' %}error-message{% else %}success-message{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Детали проекта -->
+    <section class="project-details-section">
+        <div class="container">
+            <!-- Простая навигация домой -->
+            <div class="home-link">
+                <a href="/" class="home-nav-item"><i class="fas fa-home"></i></a>
+            </div>
+            
+            <!-- Заголовок проекта -->
+            <div class="project-details-container">
+                <div class="project-header">
+                    <h1 class="project-title">{{ project[1] }}</h1>
+                    <div class="project-meta">
+                        {% for tech in project[3].split(', ') %}
+                        <span class="project-tech-badge">{{ tech }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="project-content">
+                    <!-- Изображение проекта -->
+                    <div class="project-media">
+                        <div class="project-image-wrapper">
+                            <img src="{{ url_for('static', filename=project[4]) }}" alt="{{ project[1] }}" class="project-image">
+                        </div>
+                    </div>
+                    
+                    <!-- Информация о проекте -->
+                    <div class="project-info-block">
+                        <div class="project-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-info-circle"></i>
+                                О проекте
+                            </h2>
+                            <div class="project-description">
+                                <p>{{ project[2] }}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="project-section">
+                            <h2 class="section-title">
+                                <i class="fas fa-code"></i>
+                                Используемые технологии
+                            </h2>
+                            <ul class="tech-list">
+                                {% for tech in project[3].split(', ') %}
+                                <li class="tech-list-item">
+                                    <i class="fas fa-check-circle"></i>
+                                    <span>{{ tech }}</span>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        
+                        <div class="project-actions">
+                            <a href="{{ url_for('projects') }}" class="back-btn">
+                                <i class="fas fa-arrow-left"></i> Вернуться к проектам
+                            </a>
+                            {% if session.get('logged_in') %}
+                            <form action="{{ url_for('delete_project', id=project[0]) }}" method="post" class="delete-form">
+                                <button type="submit" class="delete-btn" onclick="return confirm('Вы уверены, что хотите удалить этот проект?')">
+                                    <i class="fas fa-trash-alt"></i> Удалить проект
+                                </button>
+                            </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Футер -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <a href="/" class="footer-logo">
+                        <i class="fas fa-code"></i> Портфолио
+                    </a>
+                    <p class="footer-desc">Коллекция моих работ и проектов</p>
+                </div>
+                <div class="footer-right">
+                    <ul class="footer-links">
+                        <li><a href="/"><i class="fas fa-home"></i> Главная</a></li>
+                        <li><a href="/projects"><i class="fas fa-project-diagram"></i> Проекты</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; {{ 2023 }} Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Анимация для элементов страницы при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Добавляем класс для анимации
+            document.querySelector('.project-details-container').classList.add('loaded');
+            
+            // Плавный скролл при клике на навигационные ссылки
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+
+    <!-- Подключаем JavaScript с анимациями -->
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+</body>
+</html>

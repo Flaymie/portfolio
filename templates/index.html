@@ -1,0 +1,235 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user_info.name }} - Портфолио</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Навигационная панель -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-code"></i>
+                <span>Портфолио</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="{{ url_for('index') }}" class="nav-link active"><i class="fas fa-home"></i> Главная</a></li>
+                <li><a href="{{ url_for('projects') }}" class="nav-link"><i class="fas fa-project-diagram"></i> Проекты</a></li>
+                {% if session.get('logged_in') %}
+                <li class="nav-auth"><a href="{{ url_for('logout') }}" class="nav-link">Выход</a></li>
+                {% else %}
+                <li class="nav-auth"><a href="{{ url_for('login') }}" class="nav-link">Вход</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container flash-container">
+        {% for category, message in messages %}
+        <div class="{% if category == 'error' %}error-message{% else %}success-message{% endif %}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Заголовок страницы -->
+    <header class="projects-header">
+        <div class="container">
+            <h1 class="projects-title">Мое <span>Портфолио</span></h1>
+            <p class="projects-subtitle">{{ user_info.programming_language }} разработчик с {{ user_info.experience }} опытом работы</p>
+            
+            <div class="hero-info">
+                <div class="hero-tag">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>{{ user_info.country }}</span>
+                </div>
+                <div class="hero-tag">
+                    <i class="fas fa-briefcase"></i>
+                    <span>{{ user_info.experience }} опыта</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основная секция -->
+    <section class="projects-gallery">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Обо мне</h2>
+                <p class="section-subtitle">Немного о моем опыте и подходе к работе</p>
+            </div>
+            
+            <div class="about-content">
+                <div class="about-image">
+                    <img src="{{ url_for('static', filename='images/profile.jpg') }}" alt="Моё фото" onerror="this.src='https://via.placeholder.com/350x350?text=Моё+фото'">
+                </div>
+                <div class="about-text">
+                    <h3>{{ user_info.name }}</h3>
+                    <p>{{ user_info.programming_language }} разработчик с {{ user_info.experience }} опытом работы</p>
+                    <p>Я специализируюсь на создании современных веб-приложений, уделяя особое внимание чистоте кода, производительности и удобству пользовательского интерфейса. В своей работе я стремлюсь применять лучшие практики разработки и постоянно изучаю новые технологии.</p>
+                    <p>Мой подход к проектам сочетает в себе внимание к деталям, стратегическое мышление и ориентацию на результат. Я всегда стремлюсь понять потребности пользователей и бизнес-цели, чтобы создавать решения, которые действительно работают.</p>
+                </div>
+            </div>
+            
+            <div class="section-header">
+                <h2 class="section-title">Мои навыки</h2>
+                <p class="section-subtitle">Технологии и инструменты, с которыми я работаю</p>
+            </div>
+            
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-code"></i>
+                        Языки программирования и технологии
+                    </h3>
+                    <div class="skills-grid">
+                        {% set languages = user_info.programming_language.split(',') %}
+                        {% for language in languages %}
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">{{ language.strip() }}</span>
+                                <span class="skill-level">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 90%"></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">HTML/CSS</span>
+                                <span class="skill-level">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 85%"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="skill-info">
+                                <span class="skill-name">JavaScript</span>
+                                <span class="skill-level">80%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Проекты -->
+            <div class="section-header">
+                <h2 class="section-title">Мои проекты</h2>
+                <p class="section-subtitle">Последние работы из моего портфолио</p>
+            </div>
+            
+            {% if projects %}
+            <div class="portfolio-grid">
+                {% for project in projects[:3] %}
+                <a href="{{ url_for('project_detail', id=project[0]) }}" class="portfolio-item in-view">
+                    <div class="portfolio-item-inner">
+                        <div class="portfolio-thumb">
+                            <img src="{{ url_for('static', filename=project[4]) }}" alt="{{ project[1] }}" onerror="this.src='https://via.placeholder.com/300x200?text=Проект'">
+                            <div class="portfolio-overlay">
+                                <div class="overlay-content">
+                                    <span class="overlay-title">{{ project[1] }}</span>
+                                    <span class="view-project">Подробнее <i class="fas fa-arrow-right"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>{{ project[1] }}</h3>
+                            <p>{{ project[2]|truncate(100) }}</p>
+                            <div class="portfolio-tags">
+                                {% for tech in project[3].split(',') %}
+                                <span class="portfolio-tag">{{ tech.strip() }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            
+            <div class="view-all-projects">
+                <a href="{{ url_for('projects') }}" class="view-all-btn">
+                    <i class="fas fa-project-diagram"></i> Все проекты
+                </a>
+            </div>
+            {% else %}
+            <div class="project-placeholder">
+                <i class="fas fa-folder-open"></i>
+                <p>У вас пока нет проектов</p>
+                <a href="{{ url_for('projects') }}" class="btn primary-btn">Добавить проект</a>
+            </div>
+            {% endif %}
+            
+            <!-- Контакты -->
+            <div class="section-header">
+                <h2 class="section-title">Контакты</h2>
+                <p class="section-subtitle">Свяжитесь со мной для обсуждения проектов</p>
+            </div>
+            
+            <div class="contact-links">
+                <a href="mailto:{{ user_info.email }}" class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Email</h3>
+                    <p>{{ user_info.email|default('example@email.com') }}</p>
+                </a>
+                <a href="{{ user_info.github }}" target="_blank" class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fab fa-github"></i>
+                    </div>
+                    <h3>GitHub</h3>
+                    <p>github.com/profile</p>
+                </a>
+                <a href="https://t.me/{{ user_info.telegram }}" target="_blank" class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fab fa-telegram"></i>
+                    </div>
+                    <h3>Telegram</h3>
+                    <p>@{{ user_info.telegram|default('telegram') }}</p>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Футер -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <a href="/" class="footer-logo">
+                        <i class="fas fa-code"></i> Портфолио
+                    </a>
+                    <p class="footer-desc">Коллекция моих работ и проектов</p>
+                </div>
+                <div class="footer-right">
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('index') }}"><i class="fas fa-home"></i> Главная</a></li>
+                        <li><a href="{{ url_for('projects') }}"><i class="fas fa-project-diagram"></i> Проекты</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 {{ user_info.name }}. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Подключаем JavaScript с анимациями -->
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+</body>
+</html>

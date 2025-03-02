@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в систему - Портфолио</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="auth-page">
+    <div class="auth-background">
+        <div class="auth-circles"></div>
+    </div>
+    
+    <a href="{{ url_for('index') }}" class="home-return-link">
+        <i class="fas fa-arrow-left"></i>
+        <span>На главную</span>
+    </a>
+    
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="auth-icon">
+                    <i class="fas fa-user-lock"></i>
+                </div>
+                <h1>Вход в систему</h1>
+                <p>Для управления проектами в портфолио</p>
+            </div>
+            
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                <div class="{% if category == 'error' %}error-message{% else %}success-message{% endif %} animated fadeInUp">
+                    <i class="{% if category == 'error' %}fas fa-exclamation-circle{% else %}fas fa-check-circle{% endif %}"></i> {{ message }}
+                </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% if error %}
+                <div class="error-message animated fadeInUp">
+                    <i class="fas fa-exclamation-circle"></i> {{ error }}
+                </div>
+            {% endif %}
+            
+            {% if success %}
+                <div class="success-message animated fadeInUp">
+                    <i class="fas fa-check-circle"></i> {{ success }}
+                </div>
+            {% endif %}
+            
+            <form class="login-form" method="post" action="{{ url_for('login') }}">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Имя пользователя
+                    </label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                    <span class="input-highlight"></span>
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i> Пароль
+                    </label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                    <span class="input-highlight"></span>
+                    <button type="button" class="toggle-password">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn-auth">
+                        <span class="btn-auth-text">Войти</span>
+                        <i class="fas fa-sign-in-alt"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Анимация формы и элементов
+            const loginCard = document.querySelector('.login-card');
+            const formGroups = document.querySelectorAll('.form-group');
+            const formActions = document.querySelector('.form-actions');
+            const homeLink = document.querySelector('.home-return-link');
+            
+            setTimeout(() => {
+                loginCard.classList.add('show');
+                homeLink.classList.add('show');
+            }, 100);
+            
+            formGroups.forEach((group, index) => {
+                setTimeout(() => {
+                    group.classList.add('show');
+                }, 300 + (index * 150));
+            });
+            
+            setTimeout(() => {
+                formActions.classList.add('show');
+            }, 300 + (formGroups.length * 150));
+            
+            // Показать/скрыть пароль
+            const togglePassword = document.querySelector('.toggle-password');
+            const passwordInput = document.getElementById('password');
+            
+            if (togglePassword) {
+                togglePassword.addEventListener('click', function() {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            }
+            
+            // Анимация для инпутов
+            const inputs = document.querySelectorAll('input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentElement.classList.remove('focused');
+                    }
+                });
+                
+                // Если поле уже заполнено
+                if (input.value !== '') {
+                    input.parentElement.classList.add('focused');
+                }
+            });
+            
+            // Волновой эффект на кнопке
+            const authButton = document.querySelector('.btn-auth');
+            
+            authButton.addEventListener('mouseenter', function() {
+                this.classList.add('btn-hover');
+            });
+            
+            authButton.addEventListener('mouseleave', function() {
+                this.classList.remove('btn-hover');
+            });
+            
+            // НЕ блокируем стандартную отправку формы
+            authButton.addEventListener('click', function() {
+                // Форма будет отправлена стандартным способом браузера
+            });
+        });
+    </script>
+</body>
+</html> 
