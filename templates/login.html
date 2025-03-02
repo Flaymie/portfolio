@@ -152,5 +152,86 @@
             });
         });
     </script>
+    
+    <!-- Куки-баннер -->
+    <div id="cookie-banner" class="cookie-banner">
+        <div class="cookie-banner-container">
+            <!-- Основной вид баннера -->
+            <div id="cookie-banner-main">
+                <div class="cookie-banner-content">
+                    <div class="cookie-banner-text">
+                        <h3>Мы используем куки</h3>
+                        <p>Мы используем файлы cookie, чтобы улучшить ваш опыт использования нашего сайта, анализировать трафик и персонализировать контент. Нажимая «Принять все», вы соглашаетесь на использование всех файлов cookie. Вы можете настроить свои предпочтения или принять только необходимые для работы сайта файлы cookie.</p>
+                    </div>
+                    <div class="cookie-banner-buttons">
+                        <button class="cookie-button cookie-accept-all" onclick="acceptAllCookies()">Принять все</button>
+                        <button class="cookie-button cookie-accept-necessary" onclick="acceptEssentialCookies()">Только необходимые</button>
+                        <button class="cookie-button cookie-settings" onclick="showCookieSettings()">Настроить</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Настройки куки -->
+            <div id="cookie-banner-settings" class="cookie-banner-settings">
+                <div class="cookie-banner-content">
+                    <div class="cookie-banner-text">
+                        <h3>Настройки файлов cookie</h3>
+                        <p>Вы можете выбрать категории файлов cookie, которые вы хотите включить. Необходимые файлы cookie всегда включены, так как они необходимы для корректной работы сайта.</p>
+                        
+                        <div class="cookie-settings-options">
+                            <!-- Необходимые куки -->
+                            <div class="cookie-option cookie-option-disabled">
+                                <div class="cookie-option-info">
+                                    <div class="cookie-option-header">
+                                        <h4 class="cookie-option-title">Необходимые</h4>
+                                        <label class="cookie-switch">
+                                            <input type="checkbox" checked disabled>
+                                            <span class="cookie-slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="cookie-option-description">Необходимы для работы сайта и не могут быть отключены.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Аналитические куки -->
+                            <div class="cookie-option">
+                                <div class="cookie-option-info">
+                                    <div class="cookie-option-header">
+                                        <h4 class="cookie-option-title">Аналитические</h4>
+                                        <label class="cookie-switch">
+                                            <input type="checkbox" id="analytics-cookies">
+                                            <span class="cookie-slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="cookie-option-description">Помогают собирать информацию об использовании сайта для улучшения его работы.</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Маркетинговые куки -->
+                            <div class="cookie-option">
+                                <div class="cookie-option-info">
+                                    <div class="cookie-option-header">
+                                        <h4 class="cookie-option-title">Маркетинговые</h4>
+                                        <label class="cookie-switch">
+                                            <input type="checkbox" id="marketing-cookies">
+                                            <span class="cookie-slider"></span>
+                                        </label>
+                                    </div>
+                                    <p class="cookie-option-description">Используются для отслеживания посетителей на сайтах и показа релевантной рекламы.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cookie-banner-buttons">
+                        <button class="cookie-button cookie-save" onclick="saveCookiePreferences()">Сохранить настройки</button>
+                        <button class="cookie-button cookie-back" onclick="hideCookieSettings()">Назад</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Подключаем скрипт для управления куки -->
+    <script src="{{ url_for('static', filename='js/cookies.js') }}"></script>
 </body>
 </html> 

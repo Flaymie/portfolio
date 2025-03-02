@@ -158,5 +158,18 @@ def delete_project(id):
     flash('Проект успешно удален', 'success')
     return redirect(url_for('projects'))
 
+# Маршрут для сохранения предпочтений куки
+@app.route('/save-cookie-preferences', methods=['POST'])
+def save_cookie_preferences():
+    preferences = request.json
+    
+    # Сохраняем предпочтения в сессии
+    session['cookie_essential'] = preferences.get('essential', True)
+    session['cookie_analytics'] = preferences.get('analytics', False)
+    session['cookie_marketing'] = preferences.get('marketing', False)
+    session['cookie_preferences_saved'] = True
+    
+    return {'success': True}, 200
+
 if __name__ == '__main__':
     app.run(debug=True)

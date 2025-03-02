@@ -1,0 +1,50 @@
+<!-- Cookie Banner -->
+<div id="cookie-banner" class="cookie-banner">
+    <div class="cookie-banner-content">
+        <div class="cookie-icon-container">
+            <img src="{{ url_for('static', filename='img/cookie.svg') }}" alt="Cookie" class="cookie-icon">
+        </div>
+        <div class="cookie-text">
+            <h3>Мы используем файлы cookie</h3>
+            <p>Мы используем файлы cookie для улучшения работы сайта, аналитики и персонализации контента.</p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="accept-all" onclick="acceptAllCookies()">Принять все</button>
+            <button class="essential-only" onclick="acceptEssentialCookies()">Только необходимые</button>
+            <button class="configure" onclick="showCookieSettings()">Настроить</button>
+        </div>
+    </div>
+    <div class="cookie-settings">
+        <div class="cookie-settings-header">
+            <h4>Настройки файлов cookie</h4>
+            <p>Выберите, какие файлы cookie вы хотите разрешить</p>
+        </div>
+        <div class="cookie-options">
+            <div class="cookie-option">
+                <input type="checkbox" id="essential-cookies" checked disabled>
+                <label for="essential-cookies">
+                    Необходимые файлы cookie
+                    <span>Эти файлы cookie необходимы для работы сайта и не могут быть отключены.</span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <input type="checkbox" id="analytics-cookies">
+                <label for="analytics-cookies">
+                    Аналитические файлы cookie
+                    <span>Помогают нам понимать, как посетители взаимодействуют с сайтом.</span>
+                </label>
+            </div>
+            <div class="cookie-option">
+                <input type="checkbox" id="marketing-cookies">
+                <label for="marketing-cookies">
+                    Маркетинговые файлы cookie
+                    <span>Используются для отслеживания эффективности рекламы и персонализации контента.</span>
+                </label>
+            </div>
+        </div>
+        <div class="cookie-settings-buttons">
+            <button class="save" onclick="saveCookiePreferences()">Сохранить предпочтения</button>
+            <button class="back" onclick="hideCookieSettings()">Назад</button>
+        </div>
+    </div>
+</div> 
